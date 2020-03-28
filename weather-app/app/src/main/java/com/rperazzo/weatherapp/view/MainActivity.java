@@ -1,31 +1,30 @@
-package com.rperazzo.weatherapp;
+package com.rperazzo.weatherapp.view;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.rperazzo.weatherapp.R;
+import com.rperazzo.weatherapp.controller.NetworkController;
+import com.rperazzo.weatherapp.controller.Preferences;
 import com.rperazzo.weatherapp.entity.City;
 import com.rperazzo.weatherapp.repository.FindResult;
 import com.rperazzo.weatherapp.repository.WeatherManager;
 import com.rperazzo.weatherapp.repository.WeatherService;
+import com.rperazzo.weatherapp.view.adapter.FindItemAdapter;
 
 import java.util.ArrayList;
 
@@ -35,24 +34,23 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String PREFERENCE_NAME = "com.rperazzo.weatherapp.shared";
-    private static final String TEMPERATURE_UNIT_KEY = "TEMPERATURE_UNIT_KEY";
 
-    private SharedPreferences mSharedPref;
     private EditText mEditText;
     private TextView mTextView;
     private ProgressBar mProgressBar;
     private ListView mList;
     private FindItemAdapter mAdapter;
+    private Preferences preferences;
     private ArrayList<City> cities = new ArrayList<>();
+    private NetworkController networkController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mSharedPref = getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
-
+        networkController = new NetworkController(this);
+        preferences = new Preferences(this);
         mEditText = (EditText) findViewById(R.id.editText);
         mTextView = (TextView) findViewById(R.id.textView);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -94,9 +92,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateUnitIfNecessary(String newUnits) {
-        String currentUnits = getTemperatureUnit();
+        String currentUnits = preferences.getTemperatureUnit();
         if (!currentUnits.equals(newUnits)) {
-            setTemperatureUnit(newUnits);
+            preferences.setTemperatureUnit(newUnits);
             searchByName();
         }
     }
@@ -138,15 +136,9 @@ public class MainActivity extends AppCompatActivity {
         mTextView.setText("Error");
     }
 
-    public boolean isDeviceConnected() {
-        ConnectivityManager cm = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnected();
-    }
 
     private void searchByName() {
-        if (!isDeviceConnected()) {
+        if (networkController.isDeviceConnected()) {
             Toast.makeText(this, "No connection!", Toast.LENGTH_LONG).show();
             return;
         }
@@ -158,86 +150,8 @@ public class MainActivity extends AppCompatActivity {
 
         onStartLoading();
 
-        WeatherManager wService = new WeatherManager();
-        String units = getTemperatureUnit();
-        final Call<FindResult> findCall = wService.getService().find(search, units, WeatherManager.API_KEY);
-        findCall.enqueue(new Callback<FindResult>() {
-            @Override
-            public void onResponse(Call<FindResult> call, Response<FindResult> response) {
-                onFinishLoading(response.body());
-            }
+        String units = preferences.getTemperatureUnit();
 
-            @Override
-            public void onFailure(Call<FindResult> call, Throwable t) {
-                onFinishLoadingWithError();
-            }
-        });
     }
 
-    public void setTemperatureUnit(String value) {
-        SharedPreferences.Editor editor = mSharedPref.edit();
-        editor.putString(TEMPERATURE_UNIT_KEY, value);
-        editor.apply();
-    }
-
-    public String getTemperatureUnit() {
-        return mSharedPref.getString(TEMPERATURE_UNIT_KEY, "metric");
-    }
-
-    public class FindItemAdapter extends ArrayAdapter<City> {
-
-        public FindItemAdapter(Context context, ArrayList<City> cities) {
-            super(context, 0, cities);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            final City city = getItem(position);
-
-            if (convertView == null) {
-                convertView = LayoutInflater.from(getContext())
-                        .inflate(R.layout.city_list_item, parent, false);
-            }
-            TextView cityName = convertView.findViewById(R.id.cityNameTxt);
-            cityName.setText(city.getTitle());
-
-            TextView description = convertView.findViewById(R.id.descriptionTxt);
-            description.setText(city.getDescription());
-
-            TextView metric = convertView.findViewById(R.id.metricTxt);
-            String units = getTemperatureUnit();
-            if ("metric".equals(units)) {
-                metric.setText("ºC");
-            } else {
-                metric.setText("ºF");
-            }
-
-            TextView temp = convertView.findViewById(R.id.tempTxt);
-            temp.setText(city.getTemperature());
-
-            TextView wind = convertView.findViewById(R.id.windTxt);
-            if ("metric".equals(units)) {
-                wind.setText(city.getWind() + " m/s");
-            } else {
-                wind.setText(city.getWind() + " m/h");
-            }
-
-            TextView clouds = convertView.findViewById(R.id.cloudsTxt);
-            clouds.setText(city.getClouds());
-
-            TextView pressure = convertView.findViewById(R.id.pressureTxt);
-            pressure.setText(city.getPressure());
-
-            int resId = getContext().getResources().getIdentifier(
-                    "w_"+city.weather.get(0).icon,
-                    "drawable",
-                    getContext().getPackageName());
-
-            ImageView icon = convertView.findViewById(R.id.weatherIcon);
-            icon.setImageResource(resId);
-
-            return convertView;
-        }
-    }
 }

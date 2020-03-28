@@ -32,7 +32,6 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:onClick="onSearchClick"
         android:text="@string/search_button"
         app:layout_constraintBaseline_toBaselineOf="@+id/editText"
         app:layout_constraintLeft_toRightOf="@+id/editText"

@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -30,10 +31,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainActivityPresenter.View {
 
     private static final String PREFERENCE_NAME = "com.rperazzo.weatherapp.shared";
 
+    private MainActivityPresenter presenter;
     private SharedPreferences mSharedPref;
     private EditText mEditText;
     private TextView mTextView;
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView mList;
     private FindItemAdapter mAdapter;
     private ArrayList<City> cities = new ArrayList<>();
+    private Button btnSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +51,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mSharedPref = getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+        presenter = new MainActivityPresenter(this);
 
         mEditText = (EditText) findViewById(R.id.editText);
         mTextView = (TextView) findViewById(R.id.textView);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mList = (ListView) findViewById(R.id.list);
+        btnSearch = (Button) findViewById(R.id.button);
 
         mAdapter = new FindItemAdapter(this, cities, mSharedPref);
         mList.setAdapter(mAdapter);
@@ -61,11 +66,19 @@ public class MainActivity extends AppCompatActivity {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
                         (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    searchByName();
+                    searchByName(mEditText.getText().toString());
                 }
                 return false;
             }
         });
+
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.searchByName(mEditText.getText().toString());
+            }
+        });
+
     }
 
     @Override
@@ -93,12 +106,8 @@ public class MainActivity extends AppCompatActivity {
         String currentUnits = mAdapter.getTemperatureUnit();
         if (!currentUnits.equals(newUnits)) {
             mAdapter.setTemperatureUnit(newUnits);
-            searchByName();
+            searchByName(mEditText.getText().toString());
         }
-    }
-
-    public void onSearchClick(View view) {
-        searchByName();
     }
 
     private void onStartLoading() {
@@ -141,7 +150,8 @@ public class MainActivity extends AppCompatActivity {
         return netInfo != null && netInfo.isConnected();
     }
 
-    private void searchByName() {
+    @Override
+    public void searchByName(String name) {
         if (!isDeviceConnected()) {
             Toast.makeText(this, "No connection!", Toast.LENGTH_LONG).show();
             return;

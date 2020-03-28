@@ -6,11 +6,11 @@ import java.util.List;
 
 public class Presenter {
 
-    private PresenterView view;
+    private IPresenter view;
 
     private List<Media> medias;
 
-    public Presenter(PresenterView view) {
+    public Presenter(IPresenter view) {
         this.view = view;
     }
 

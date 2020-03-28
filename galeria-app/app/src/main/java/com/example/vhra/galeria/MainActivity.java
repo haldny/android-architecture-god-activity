@@ -7,9 +7,9 @@ import android.support.v7.widget.RecyclerView;
 
 import com.example.vhra.galeria.adapter.MediasAdapter;
 import com.example.vhra.galeria.presenter.Presenter;
-import com.example.vhra.galeria.presenter.PresenterView;
+import com.example.vhra.galeria.presenter.IPresenter;
 
-public class MainActivity extends AppCompatActivity implements PresenterView {
+public class MainActivity extends AppCompatActivity implements IPresenter {
 
     private Presenter presenter;
 

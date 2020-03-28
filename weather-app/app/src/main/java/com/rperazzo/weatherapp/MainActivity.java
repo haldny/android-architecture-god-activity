@@ -22,9 +22,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.rperazzo.weatherapp.WeatherManager.FindResult;
-import com.rperazzo.weatherapp.WeatherManager.WeatherService;
 import com.rperazzo.weatherapp.entity.City;
+import com.rperazzo.weatherapp.repository.FindResult;
+import com.rperazzo.weatherapp.repository.WeatherManager;
+import com.rperazzo.weatherapp.repository.WeatherService;
 
 import java.util.ArrayList;
 
@@ -117,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void onFinishLoading(WeatherManager.FindResult result){
+    private void onFinishLoading(FindResult result){
 
         mProgressBar.setVisibility(View.GONE);
         cities.clear();
@@ -157,9 +158,9 @@ public class MainActivity extends AppCompatActivity {
 
         onStartLoading();
 
-        WeatherService wService = WeatherManager.getService();
+        WeatherManager wService = new WeatherManager();
         String units = getTemperatureUnit();
-        final Call<FindResult> findCall = wService.find(search, units, WeatherManager.API_KEY);
+        final Call<FindResult> findCall = wService.getService().find(search, units, WeatherManager.API_KEY);
         findCall.enqueue(new Callback<FindResult>() {
             @Override
             public void onResponse(Call<FindResult> call, Response<FindResult> response) {

@@ -1,10 +1,13 @@
 package com.rperazzo.weatherapp;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -24,6 +27,7 @@ import com.rperazzo.weatherapp.api.WeatherManager;
 import com.rperazzo.weatherapp.api.WeatherService;
 import com.rperazzo.weatherapp.entities.City;
 import com.rperazzo.weatherapp.entities.FindResult;
+import com.rperazzo.weatherapp.viewModel.FindResultViewModel;
 
 import java.util.ArrayList;
 
@@ -45,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
     private ArrayList<City> cities = new ArrayList<>();
     private Button btnSearch;
     private Button btnClean;
+    private FindResultViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +93,24 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
             }
         });
 
+        initViewModel();
+        initObservable();
+    }
+
+    private void initViewModel(){
+        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()).create(FindResultViewModel.class);
+    }
+
+    private void initObservable(){
+        viewModel.getFindResultLiveData().observe(this, new Observer<FindResult>() {
+            @Override
+            public void onChanged(@Nullable FindResult findResult) {
+                cities.clear();
+                cities.addAll(findResult.list);
+                mList.setVisibility(View.VISIBLE);
+                mAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -135,12 +158,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
     private void onFinishLoading(FindResult result){
 
         mProgressBar.setVisibility(View.GONE);
-        cities.clear();
 
         if (result.list.size() > 0) {
-            cities.addAll(result.list);
-            mList.setVisibility(View.VISIBLE);
-            mAdapter.notifyDataSetChanged();
+            viewModel.carregarResultado(result);
         } else {
             mTextView.setText("No results.");
         }
@@ -195,4 +215,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
         cities.clear();
         mAdapter.notifyDataSetChanged();
     }
+
+
+
 }

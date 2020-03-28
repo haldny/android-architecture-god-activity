@@ -1,7 +1,5 @@
 package com.rperazzo.weatherapp;
 
-import android.view.View;
-
 public class MainActivityPresenter {
 
     private View view;

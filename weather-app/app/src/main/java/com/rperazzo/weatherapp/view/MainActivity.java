@@ -20,8 +20,7 @@ import com.rperazzo.weatherapp.R;
 import com.rperazzo.weatherapp.model.City;
 import com.rperazzo.weatherapp.presenter.MainActivityPresenter;
 import com.rperazzo.weatherapp.presenter.MainActivityPresenterImpl;
-import com.rperazzo.weatherapp.repository.WeatherManager;
-import com.rperazzo.weatherapp.repository.WeatherManager.FindResult;
+import com.rperazzo.weatherapp.repository.FindResult;
 import com.rperazzo.weatherapp.view.adapter.FindItemAdapter;
 
 import java.util.ArrayList;

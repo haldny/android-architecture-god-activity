@@ -1,4 +1,7 @@
 package com.rperazzo.weatherapp.model;
 
-public class Sys {
+import java.io.Serializable;
+
+public class Sys implements Serializable {
+    public String country;
 }

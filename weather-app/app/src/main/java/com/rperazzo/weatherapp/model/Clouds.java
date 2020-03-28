@@ -1,4 +1,7 @@
 package com.rperazzo.weatherapp.model;
 
-public class Clouds {
+import java.io.Serializable;
+
+public class Clouds implements Serializable {
+    public int all;
 }

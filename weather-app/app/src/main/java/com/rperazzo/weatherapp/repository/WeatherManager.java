@@ -1,4 +1,4 @@
-package com.rperazzo.weatherapp;
+package com.rperazzo.weatherapp.repository;
 
 import com.rperazzo.weatherapp.model.City;
 import com.rperazzo.weatherapp.model.Clouds;
@@ -26,15 +26,6 @@ public class WeatherManager {
     public static final String API_KEY =
             "520d6b47a12735bee8f69c57737d145f";
 
-    public interface WeatherService {
-        @GET("find")
-        Call<FindResult> find(
-                @Query("q") String cityName,
-                @Query("units") String units,
-                @Query("appid") String apiKey
-        );
-    }
-
     private static OkHttpClient mClient = new OkHttpClient();
 
     public static WeatherService getService() {
@@ -47,13 +38,6 @@ public class WeatherManager {
         return retrofit.create(WeatherService.class);
     }
 
-    public class FindResult {
-        public final List<City> list;
-
-        public FindResult(List<City> list) {
-            this.list = list;
-        }
-    }
 
 }
 

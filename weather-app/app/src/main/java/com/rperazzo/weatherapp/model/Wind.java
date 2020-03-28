@@ -1,4 +1,7 @@
 package com.rperazzo.weatherapp.model;
 
-public class Wind {
+import java.io.Serializable;
+
+public class Wind implements Serializable {
+    public double speed;
 }

@@ -4,7 +4,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public interface WeatherService {
+public interface IWeatherService {
 
     @GET("find")
     Call<FindResult> find(
@@ -13,5 +13,5 @@ public interface WeatherService {
             @Query("appid") String apiKey
     );
 
-    WeatherService getService();
+    IWeatherService getService();
 }

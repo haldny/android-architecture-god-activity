@@ -5,7 +5,7 @@ import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class WeatherManager implements WeatherService{
+public class WeatherManager implements IWeatherService{
 
     private static final String API_URL =
             "http://api.openweathermap.org/data/2.5/";
@@ -21,13 +21,13 @@ public class WeatherManager implements WeatherService{
     }
 
     @Override
-    public WeatherService getService() {
+    public IWeatherService getService() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(API_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(mClient)
                 .build();
 
-        return retrofit.create(WeatherService.class);
+        return retrofit.create(IWeatherService.class);
     }
 }

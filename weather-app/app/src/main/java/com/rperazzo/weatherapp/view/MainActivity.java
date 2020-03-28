@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rperazzo.weatherapp.R;
+import com.rperazzo.weatherapp.controller.MainController;
 import com.rperazzo.weatherapp.controller.SettingsController;
 import com.rperazzo.weatherapp.entity.Preferences;
 import com.rperazzo.weatherapp.entity.City;
@@ -42,12 +43,13 @@ public class MainActivity extends AppCompatActivity {
     private Preferences preferences;
     private SettingsController settingsController;
     private ArrayList<City> cities = new ArrayList<>();
+    private MainController mainController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        mainController = new MainController(this);
         settingsController = new SettingsController(this);
         preferences = new Preferences(this);
         mEditText = (EditText) findViewById(R.id.editText);
@@ -115,6 +117,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void searchResponse(boolean success, FindResult result){
+        if(success){
+            this.onFinishLoading(result);
+        }else{
+            this.onFinishLoadingWithError();
+        }
+    }
     private void onFinishLoading(FindResult result){
 
         mProgressBar.setVisibility(View.GONE);
@@ -155,21 +164,9 @@ public class MainActivity extends AppCompatActivity {
 
         onStartLoading();
 
-        WeatherManager wService = new WeatherManager();
         String units = preferences.getTemperatureUnit();
+        mainController.searchByName(search, units);
 
-        final Call<FindResult> findCall = wService.getService().find(search, units, WeatherManager.API_KEY);
-        findCall.enqueue(new Callback<FindResult>() {
-            @Override
-            public void onResponse(Call<FindResult> call, Response<FindResult> response) {
-                onFinishLoading(response.body());
-            }
-
-            @Override
-            public void onFailure(Call<FindResult> call, Throwable t) {
-                onFinishLoadingWithError();
-            }
-        });
     }
 
 }

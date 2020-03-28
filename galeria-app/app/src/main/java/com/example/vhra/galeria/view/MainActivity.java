@@ -1,10 +1,11 @@
-package com.example.vhra.galeria;
+package com.example.vhra.galeria.view;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.example.vhra.galeria.R;
 import com.example.vhra.galeria.adapter.MediasAdapter;
 import com.example.vhra.galeria.presenter.Presenter;
 import com.example.vhra.galeria.presenter.IPresenter;

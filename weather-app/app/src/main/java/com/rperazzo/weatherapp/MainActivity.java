@@ -8,22 +8,21 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.rperazzo.weatherapp.WeatherManager.FindResult;
-import com.rperazzo.weatherapp.WeatherManager.WeatherService;
+import com.rperazzo.weatherapp.adapter.FindItemAdapter;
+import com.rperazzo.weatherapp.api.WeatherManager;
+import com.rperazzo.weatherapp.api.WeatherService;
+import com.rperazzo.weatherapp.models.City;
+import com.rperazzo.weatherapp.models.FindResult;
 
 import java.util.ArrayList;
 
@@ -34,7 +33,6 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     private static final String PREFERENCE_NAME = "com.rperazzo.weatherapp.shared";
-    private static final String TEMPERATURE_UNIT_KEY = "TEMPERATURE_UNIT_KEY";
 
     private SharedPreferences mSharedPref;
     private EditText mEditText;
@@ -42,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar mProgressBar;
     private ListView mList;
     private FindItemAdapter mAdapter;
-    private ArrayList<WeatherManager.City> cities = new ArrayList<>();
+    private ArrayList<City> cities = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mList = (ListView) findViewById(R.id.list);
 
-        mAdapter = new FindItemAdapter(this, cities);
+        mAdapter = new FindItemAdapter(this, cities, mSharedPref);
         mList.setAdapter(mAdapter);
 
         mEditText.setOnKeyListener(new View.OnKeyListener() {
@@ -92,9 +90,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateUnitIfNecessary(String newUnits) {
-        String currentUnits = getTemperatureUnit();
+        String currentUnits = mAdapter.getTemperatureUnit();
         if (!currentUnits.equals(newUnits)) {
-            setTemperatureUnit(newUnits);
+            mAdapter.setTemperatureUnit(newUnits);
             searchByName();
         }
     }
@@ -111,12 +109,12 @@ public class MainActivity extends AppCompatActivity {
         View view = this.getCurrentFocus();
         if (view != null) {
             InputMethodManager imm = (InputMethodManager)
-                     getSystemService(Context.INPUT_METHOD_SERVICE);
+                    getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 
-    private void onFinishLoading(WeatherManager.FindResult result){
+    private void onFinishLoading(FindResult result){
 
         mProgressBar.setVisibility(View.GONE);
         cities.clear();
@@ -157,7 +155,8 @@ public class MainActivity extends AppCompatActivity {
         onStartLoading();
 
         WeatherService wService = WeatherManager.getService();
-        String units = getTemperatureUnit();
+
+        String units = mAdapter.getTemperatureUnit();
         final Call<FindResult> findCall = wService.find(search, units, WeatherManager.API_KEY);
         findCall.enqueue(new Callback<FindResult>() {
             @Override
@@ -170,72 +169,5 @@ public class MainActivity extends AppCompatActivity {
                 onFinishLoadingWithError();
             }
         });
-    }
-
-    public void setTemperatureUnit(String value) {
-        SharedPreferences.Editor editor = mSharedPref.edit();
-        editor.putString(TEMPERATURE_UNIT_KEY, value);
-        editor.apply();
-    }
-
-    public String getTemperatureUnit() {
-        return mSharedPref.getString(TEMPERATURE_UNIT_KEY, "metric");
-    }
-
-    public class FindItemAdapter extends ArrayAdapter<WeatherManager.City> {
-
-        public FindItemAdapter(Context context, ArrayList<WeatherManager.City> cities) {
-            super(context, 0, cities);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            final WeatherManager.City city = getItem(position);
-
-            if (convertView == null) {
-                convertView = LayoutInflater.from(getContext())
-                        .inflate(R.layout.city_list_item, parent, false);
-            }
-            TextView cityName = convertView.findViewById(R.id.cityNameTxt);
-            cityName.setText(city.getTitle());
-
-            TextView description = convertView.findViewById(R.id.descriptionTxt);
-            description.setText(city.getDescription());
-
-            TextView metric = convertView.findViewById(R.id.metricTxt);
-            String units = getTemperatureUnit();
-            if ("metric".equals(units)) {
-                metric.setText("ºC");
-            } else {
-                metric.setText("ºF");
-            }
-
-            TextView temp = convertView.findViewById(R.id.tempTxt);
-            temp.setText(city.getTemperature());
-
-            TextView wind = convertView.findViewById(R.id.windTxt);
-            if ("metric".equals(units)) {
-                wind.setText(city.getWind() + " m/s");
-            } else {
-                wind.setText(city.getWind() + " m/h");
-            }
-
-            TextView clouds = convertView.findViewById(R.id.cloudsTxt);
-            clouds.setText(city.getClouds());
-
-            TextView pressure = convertView.findViewById(R.id.pressureTxt);
-            pressure.setText(city.getPressure());
-
-            int resId = getContext().getResources().getIdentifier(
-                    "w_"+city.weather.get(0).icon,
-                    "drawable",
-                    getContext().getPackageName());
-
-            ImageView icon = convertView.findViewById(R.id.weatherIcon);
-            icon.setImageResource(resId);
-
-            return convertView;
-        }
     }
 }

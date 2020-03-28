@@ -14,7 +14,12 @@ public class MainActivityPresenter {
         view.searchByName(name);
     }
 
+    public void cleanList() {
+        view.cleanList();
+    }
+
     public interface View{
         void searchByName(String name);
+        void cleanList();
     }
 }

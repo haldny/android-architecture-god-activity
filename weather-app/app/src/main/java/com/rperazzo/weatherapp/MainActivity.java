@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
     private FindItemAdapter mAdapter;
     private ArrayList<City> cities = new ArrayList<>();
     private Button btnSearch;
+    private Button btnClean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mList = (ListView) findViewById(R.id.list);
         btnSearch = (Button) findViewById(R.id.button);
+        btnClean = (Button) findViewById(R.id.buttonClean);
 
         mAdapter = new FindItemAdapter(this, cities, mSharedPref);
         mList.setAdapter(mAdapter);
@@ -76,6 +78,13 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
             @Override
             public void onClick(View view) {
                 presenter.searchByName(mEditText.getText().toString());
+            }
+        });
+
+        btnClean.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.cleanList();
             }
         });
 
@@ -179,5 +188,11 @@ public class MainActivity extends AppCompatActivity implements MainActivityPrese
                 onFinishLoadingWithError();
             }
         });
+    }
+
+    @Override
+    public void cleanList() {
+        cities.clear();
+        mAdapter.notifyDataSetChanged();
     }
 }

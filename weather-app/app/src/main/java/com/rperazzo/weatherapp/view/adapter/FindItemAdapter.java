@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.rperazzo.weatherapp.R;
-import com.rperazzo.weatherapp.controller.Preferences;
+import com.rperazzo.weatherapp.entity.Preferences;
 import com.rperazzo.weatherapp.entity.City;
 
 import java.util.ArrayList;

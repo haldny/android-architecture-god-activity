@@ -18,11 +18,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rperazzo.weatherapp.R;
-import com.rperazzo.weatherapp.controller.Preferences;
+import com.rperazzo.weatherapp.controller.SettingsController;
+import com.rperazzo.weatherapp.entity.Preferences;
 import com.rperazzo.weatherapp.entity.City;
 import com.rperazzo.weatherapp.repository.FindResult;
 import com.rperazzo.weatherapp.repository.WeatherManager;
-import com.rperazzo.weatherapp.repository.WeatherService;
 import com.rperazzo.weatherapp.view.adapter.FindItemAdapter;
 
 import java.util.ArrayList;
@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView mList;
     private FindItemAdapter mAdapter;
     private Preferences preferences;
+    private SettingsController settingsController;
     private ArrayList<City> cities = new ArrayList<>();
 
     @Override
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        settingsController = new SettingsController(this);
         preferences = new Preferences(this);
         mEditText = (EditText) findViewById(R.id.editText);
         mTextView = (TextView) findViewById(R.id.textView);
@@ -91,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
     private void updateUnitIfNecessary(String newUnits) {
         String currentUnits = preferences.getTemperatureUnit();
         if (!currentUnits.equals(newUnits)) {
-            preferences.setTemperatureUnit(newUnits);
+            settingsController.setTemperatureUnit(newUnits);
             searchByName();
         }
     }

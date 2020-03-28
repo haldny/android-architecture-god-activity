@@ -1,4 +1,4 @@
-package com.example.vhra.galeria.adapter;
+package com.example.vhra.galeria.view.adapter;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;

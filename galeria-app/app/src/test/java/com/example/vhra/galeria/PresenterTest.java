@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-import com.example.vhra.galeria.adapter.MediasAdapter;
+import com.example.vhra.galeria.view.adapter.MediasAdapter;
 import com.example.vhra.galeria.presenter.IPresenter;
 import com.example.vhra.galeria.presenter.Presenter;
 

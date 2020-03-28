@@ -6,7 +6,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.example.vhra.galeria.R;
-import com.example.vhra.galeria.adapter.MediasAdapter;
+import com.example.vhra.galeria.view.adapter.MediasAdapter;
 import com.example.vhra.galeria.presenter.Presenter;
 import com.example.vhra.galeria.presenter.IPresenter;
 

@@ -21,8 +21,8 @@ import android.widget.Toast;
 import com.rperazzo.weatherapp.adapter.FindItemAdapter;
 import com.rperazzo.weatherapp.api.WeatherManager;
 import com.rperazzo.weatherapp.api.WeatherService;
-import com.rperazzo.weatherapp.models.City;
-import com.rperazzo.weatherapp.models.FindResult;
+import com.rperazzo.weatherapp.entities.City;
+import com.rperazzo.weatherapp.entities.FindResult;
 
 import java.util.ArrayList;
 

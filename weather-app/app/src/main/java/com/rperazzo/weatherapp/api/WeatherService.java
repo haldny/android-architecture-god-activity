@@ -1,6 +1,6 @@
 package com.rperazzo.weatherapp.api;
 
-import com.rperazzo.weatherapp.models.FindResult;
+import com.rperazzo.weatherapp.entities.FindResult;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

@@ -1,8 +1,8 @@
 package com.rperazzo.weatherapp;
 
 import org.junit.Assert;
-import com.rperazzo.weatherapp.models.City;
-import com.rperazzo.weatherapp.models.Main;
+import com.rperazzo.weatherapp.entities.City;
+import com.rperazzo.weatherapp.entities.Main;
 
 import org.junit.Test;
 

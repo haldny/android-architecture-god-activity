@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.rperazzo.weatherapp.R;
-import com.rperazzo.weatherapp.models.City;
+import com.rperazzo.weatherapp.entities.City;
 
 import java.util.ArrayList;
 

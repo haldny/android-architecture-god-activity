@@ -18,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rperazzo.weatherapp.R;
-import com.rperazzo.weatherapp.controller.NetworkController;
 import com.rperazzo.weatherapp.controller.Preferences;
 import com.rperazzo.weatherapp.entity.City;
 import com.rperazzo.weatherapp.repository.FindResult;
@@ -42,14 +41,12 @@ public class MainActivity extends AppCompatActivity {
     private FindItemAdapter mAdapter;
     private Preferences preferences;
     private ArrayList<City> cities = new ArrayList<>();
-    private NetworkController networkController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        networkController = new NetworkController(this);
         preferences = new Preferences(this);
         mEditText = (EditText) findViewById(R.id.editText);
         mTextView = (TextView) findViewById(R.id.textView);
@@ -136,9 +133,15 @@ public class MainActivity extends AppCompatActivity {
         mTextView.setText("Error");
     }
 
+    public boolean isDeviceConnected() {
+        ConnectivityManager cm = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnected();
+    }
 
     private void searchByName() {
-        if (networkController.isDeviceConnected()) {
+        if (!isDeviceConnected()) {
             Toast.makeText(this, "No connection!", Toast.LENGTH_LONG).show();
             return;
         }
@@ -150,8 +153,21 @@ public class MainActivity extends AppCompatActivity {
 
         onStartLoading();
 
+        WeatherManager wService = new WeatherManager();
         String units = preferences.getTemperatureUnit();
 
+        final Call<FindResult> findCall = wService.getService().find(search, units, WeatherManager.API_KEY);
+        findCall.enqueue(new Callback<FindResult>() {
+            @Override
+            public void onResponse(Call<FindResult> call, Response<FindResult> response) {
+                onFinishLoading(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<FindResult> call, Throwable t) {
+                onFinishLoadingWithError();
+            }
+        });
     }
 
 }

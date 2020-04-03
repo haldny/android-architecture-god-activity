@@ -1,20 +1,13 @@
 <resources>
-    <string name="app_name">WeatherApp</string>
-    <string name="city_seach_hint">Type city\'s name</string>
-    <string name="city_search_hint">Type city\'s name</string>
-    <string name="search_button">Search</string>
-
-    <array name="cidades">
-        <item>Cidade 1</item>
-        <item>Cidade 2</item>
-        <item>Cidade 3</item>
-        <item>Cidade 4</item>
-        <item>Cidade 5</item>
-        <item>Cidade 6</item>
-        <item>Cidade 7</item>
-        <item>Cidade 8</item>
-        <item>Cidade 9</item>
-        <item>Cidade 10</item>
-        <item>Cidade 11</item>
-    </array>
+    <string name="app_name">VSS WeatherApp</string>
+    <string name="temperature_unit">Temperature Unit</string>
+    <string name="celcius">ºC</string>
+    <string name="farenheight">ºF</string>
+    <string name="description_language">Description Language</string>
+    <string name="english">EN</string>
+    <string name="portuguese">PT</string>
+    <string name="wind">wind</string>
+    <string name="clouds">clouds</string>
+    <string name="no_internet">No internet connection</string>
+    <string name="settings">Settings</string>
 </resources>

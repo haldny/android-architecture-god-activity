@@ -2,8 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/AndroidStudioProjects-android-architecture-god-activity-weather-app.iml" filepath="$PROJECT_DIR$/AndroidStudioProjects-android-architecture-god-activity-weather-app.iml" group="weather-app" />
+      <module fileurl="file://$PROJECT_DIR$/android-architecture-god-activity-weather-app.iml" filepath="$PROJECT_DIR$/android-architecture-god-activity-weather-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/android-architecture-god-activity-weather-app-app.iml" filepath="$PROJECT_DIR$/app/android-architecture-god-activity-weather-app-app.iml" group="weather-app/app" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/weather-app.iml" filepath="$PROJECT_DIR$/weather-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/weather-app-app.iml" filepath="$PROJECT_DIR$/app/weather-app-app.iml" />
     </modules>
   </component>
 </project>
